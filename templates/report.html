@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>보고자료 제목</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css">
+<style>
+/* ── 디자인 토큰 (Figma 초안과 같은 값) ───────────────── */
+:root {
+  --navy: #003879;      /* 제목 */
+  --ink: #111111;       /* 리드·본문 */
+  --sub: #555b66;       /* 보조 텍스트 */
+  --line: #d9dde3;      /* 테두리 */
+  --head: #f1f3f6;      /* 표 헤더 */
+  --tint: #e8f1fb;      /* 강조(연파랑) */
+  --accent: #e8710a;    /* 신규·확인 필요(주황) */
+  --page: #eef0f3;
+  --card: #ffffff;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--page); color: var(--ink);
+  font-family: "Pretendard", "Noto Sans KR", system-ui, sans-serif;
+  font-size: 16px; line-height: 1.6; word-break: keep-all;
+}
+.topbar {
+  position: sticky; top: 0; z-index: 10; background: var(--card);
+  border-bottom: 1px solid var(--line);
+  display: flex; gap: 16px; align-items: center; padding: 10px 16px; font-size: 14px;
+}
+.topbar a { color: var(--navy); text-decoration: none; }
+.topbar a:hover { text-decoration: underline; }
+.topbar .sp { flex: 1; }
+main { max-width: 1120px; margin: 0 auto; padding: 24px 16px 64px; display: grid; gap: 24px; }
+
+/* ── 슬라이드 공통 ─────────────────────────────────── */
+.slide {
+  background: var(--card); border: 1px solid var(--line); border-radius: 6px;
+  padding: 48px 56px; aspect-ratio: 16 / 9; display: flex; flex-direction: column; overflow: hidden;
+}
+.slide .no { font-size: 13px; color: var(--sub); margin-bottom: 8px; }
+.slide h2 { margin: 0; color: var(--navy); font-size: 30px; font-weight: 700; line-height: 1.3; }
+.slide .lead { margin: 12px 0 28px; font-size: 18px; font-weight: 500; color: var(--ink); }
+.slide .body { flex: 1; min-height: 0; }
+.check { display: inline-block; margin-left: 6px; padding: 0 6px; border-radius: 3px;
+  font-size: 12px; font-weight: 600; color: #fff; background: var(--accent); vertical-align: 2px; }
+
+/* cover */
+.slide--cover { justify-content: center; background: var(--navy); color: #fff; border: 0; }
+.slide--cover h1 { margin: 0; font-size: 44px; line-height: 1.25; }
+.slide--cover .subtitle { margin: 16px 0 0; font-size: 20px; opacity: .85; }
+.slide--cover .meta { margin-top: auto; font-size: 15px; opacity: .75; }
+
+/* summary */
+.points { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+.point { border: 1px solid var(--line); border-top: 4px solid var(--navy); padding: 20px; border-radius: 4px; }
+.point b { display: block; color: var(--navy); font-size: 17px; margin-bottom: 6px; }
+.point p { margin: 0; font-size: 15px; }
+
+/* bullets */
+.bullets { margin: 0; padding-left: 22px; font-size: 17px; display: grid; gap: 10px; }
+
+/* table */
+table { width: 100%; border-collapse: collapse; font-size: 15px; }
+th, td { border: 1px solid var(--line); padding: 10px 12px; text-align: left; vertical-align: top; }
+th { background: var(--head); font-weight: 600; }
+tr.hl td { background: var(--tint); }
+.note { margin-top: 10px; font-size: 13px; color: var(--sub); }
+
+/* flow */
+.flow { display: flex; gap: 0; align-items: stretch; }
+.step { flex: 1; position: relative; border: 1px solid var(--line); border-radius: 4px; padding: 18px 16px; margin-right: 28px; }
+.step:last-child { margin-right: 0; }
+.step:not(:last-child)::after { content: "→"; position: absolute; right: -24px; top: 50%; transform: translateY(-50%); color: var(--sub); font-size: 18px; }
+.step b { display: block; color: var(--navy); margin-bottom: 6px; }
+.step p { margin: 0; font-size: 14px; }
+.step.on { background: var(--tint); border-color: var(--navy); }
+
+/* compare */
+.compare { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.col { border: 1px solid var(--line); border-radius: 4px; padding: 20px; }
+.col h3 { margin: 0 0 12px; font-size: 17px; color: var(--sub); }
+.col ul { margin: 0; padding-left: 20px; display: grid; gap: 8px; font-size: 15px; }
+.col.after { border-color: var(--navy); background: var(--tint); }
+.col.after h3 { color: var(--navy); }
+
+/* 작은 화면: 비율 고정을 풀고 세로로 */
+@media (max-width: 760px) {
+  .slide { aspect-ratio: auto; padding: 28px 20px; }
+  .slide h2 { font-size: 22px; }
+  .slide--cover h1 { font-size: 30px; }
+  .slide--cover { min-height: 60vh; }
+  .flow { flex-direction: column; }
+  .step { margin: 0 0 24px; }
+  .step:not(:last-child)::after { content: "↓"; right: auto; left: 50%; top: auto; bottom: -24px; transform: translateX(-50%); }
+  .compare { grid-template-columns: 1fr; }
+  .table-wrap { overflow-x: auto; }
+}
+/* 인쇄: 슬라이드 1장 = 1페이지 */
+@media print {
+  @page { size: A4 landscape; margin: 0; }
+  body { background: #fff; }
+  .topbar { display: none; }
+  main { padding: 0; gap: 0; max-width: none; }
+  .slide { break-after: page; border: 0; border-radius: 0; height: 100vh; aspect-ratio: auto; }
+}
+</style>
+</head>
+<body>
+<nav class="topbar">
+  <a href="../../">← 목록</a>
+  <span class="sp"></span>
+  <a href="01_PRD.md">PRD</a>
+  <a href="00_원문.md">원문</a>
+</nav>
+
+<main>
+  <!-- S01 · cover -->
+  <section class="slide slide--cover">
+    <h1>보고자료 제목</h1>
+    <p class="subtitle">부제 — 한 줄로 무엇에 대한 보고인지</p>
+    <p class="meta">YYYY-MM-DD · 작성자</p>
+  </section>
+
+  <!-- S02 · summary -->
+  <section class="slide">
+    <div class="no">02</div>
+    <h2>요약</h2>
+    <p class="lead">리드: 이 장의 결론을 한 문장으로 쓴다.</p>
+    <div class="body points">
+      <div class="point"><b>소제목 1</b><p>설명</p></div>
+      <div class="point"><b>소제목 2</b><p>설명</p></div>
+      <div class="point"><b>소제목 3</b><p>설명<span class="check">확인 필요</span></p></div>
+    </div>
+  </section>
+
+  <!-- S03 · bullets -->
+  <section class="slide">
+    <div class="no">03</div>
+    <h2>나열 슬라이드</h2>
+    <p class="lead">리드 문장</p>
+    <ul class="body bullets">
+      <li>항목 1</li>
+      <li>항목 2</li>
+      <li>항목 3</li>
+    </ul>
+  </section>
+
+  <!-- S04 · table -->
+  <section class="slide">
+    <div class="no">04</div>
+    <h2>표 슬라이드</h2>
+    <p class="lead">리드 문장</p>
+    <div class="body table-wrap">
+      <table>
+        <thead><tr><th>구분</th><th>현재</th><th>개선</th></tr></thead>
+        <tbody>
+          <tr><td>항목 A</td><td>내용</td><td>내용</td></tr>
+          <tr class="hl"><td>항목 B (강조 행)</td><td>내용</td><td>내용</td></tr>
+        </tbody>
+      </table>
+      <p class="note">주석: 출처·기준일</p>
+    </div>
+  </section>
+
+  <!-- S05 · flow -->
+  <section class="slide">
+    <div class="no">05</div>
+    <h2>단계 슬라이드</h2>
+    <p class="lead">리드 문장</p>
+    <div class="body flow">
+      <div class="step"><b>1. 단계</b><p>설명</p></div>
+      <div class="step on"><b>2. 강조 단계</b><p>설명</p></div>
+      <div class="step"><b>3. 단계</b><p>설명</p></div>
+    </div>
+  </section>
+
+  <!-- S06 · compare -->
+  <section class="slide">
+    <div class="no">06</div>
+    <h2>비교 슬라이드</h2>
+    <p class="lead">리드 문장</p>
+    <div class="body compare">
+      <div class="col"><h3>현재</h3><ul><li>항목</li><li>항목</li></ul></div>
+      <div class="col after"><h3>개선</h3><ul><li>항목</li><li>항목</li></ul></div>
+    </div>
+  </section>
+
+  <!-- S07 · next -->
+  <section class="slide">
+    <div class="no">07</div>
+    <h2>다음 단계</h2>
+    <p class="lead">리드 문장</p>
+    <div class="body table-wrap">
+      <table>
+        <thead><tr><th>할 일</th><th>담당</th><th>기한</th></tr></thead>
+        <tbody>
+          <tr><td>할 일 1</td><td>담당</td><td>N주 이내 (예: 2주)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>

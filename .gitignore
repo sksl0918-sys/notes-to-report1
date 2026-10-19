@@ -1,0 +1,9 @@
+node_modules/
+.vercel/
+.env*
+.mcp.json
+.claude/settings.local.json
+_tmp*
+*.log
+Thumbs.db
+.DS_Store
